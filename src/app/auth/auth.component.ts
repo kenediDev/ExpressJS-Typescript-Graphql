@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, DoCheck, OnInit } from '@angular/core';
 import { Store } from '@ngrx/store';
 import { CompleteService } from '../../service/completeService';
 import { UserService } from '../../service/userService';
@@ -24,5 +24,10 @@ export class AuthComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    // When change screen, this automatic reset input
+    this.complete.detect.subscribe((x) => {
+      this.user.resetInput();
+    });
+  }
 }

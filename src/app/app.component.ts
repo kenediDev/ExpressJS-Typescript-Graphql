@@ -1,4 +1,8 @@
-import { Component, DoCheck, OnInit } from '@angular/core';
+import {
+  Component,
+  DoCheck,
+  OnInit,
+} from '@angular/core';
 import { Store } from '@ngrx/store';
 import { GeneralApollo } from '../apollo/generalApollo';
 import { CompleteService } from '../service/completeService';

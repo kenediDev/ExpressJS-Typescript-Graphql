@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 type DrawerType = 'open' | 'close' | 'visibility';
 export type ScreenType = 'login' | 'register' | 'forgotted' | 'loading';
@@ -17,10 +18,14 @@ export interface CompleteMessageInter {
   providedIn: 'root',
 })
 export class CompleteService {
+  public detectForResetInput: Subject<string> = new BehaviorSubject<string>('');
+  detect = this.detectForResetInput.asObservable();
+
   constructor(private router: Router) {}
 
   drawer: DrawerType = 'visibility';
   screen: ScreenType = 'login';
+
   notification: CompleteMessageInter = {
     message: '',
     notification: 'visibility',
@@ -40,6 +45,7 @@ export class CompleteService {
 
   changeScreen(args: ScreenType) {
     this.screen = args;
+    this.detectForResetInput.next(args);
   }
 
   changeNotification(args: CompleteMessageInter) {
@@ -49,19 +55,18 @@ export class CompleteService {
     // }
   }
   changeRouter(args: string, kwarg: ScreenType) {
-    const router = this.router.url;
     if (kwarg === 'login') {
       this.screen = kwarg;
-      this.router.navigate([args]);
       if (window.innerWidth <= 1008) {
         this.drawer = 'close';
       }
     } else if (kwarg === 'register') {
       this.screen = kwarg;
-      this.router.navigate([args]);
       if (window.innerWidth <= 1008) {
         this.drawer = 'close';
       }
     }
+    this.router.navigate([args]);
+    this.detectForResetInput.next(kwarg);
   }
 }
