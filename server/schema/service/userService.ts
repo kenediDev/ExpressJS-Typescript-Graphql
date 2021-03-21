@@ -11,6 +11,7 @@ import {
 import { UserQueryResponse } from '../query/userQuery';
 import dotenv from 'dotenv';
 import { authenticateJWT } from '../../utils/authenticate';
+import { StatusNotificationGRAPHQL } from '../types/interface';
 
 dotenv.config();
 
@@ -19,21 +20,28 @@ dotenv.config();
 export class UserEntityRepository extends Repository<UserEntity> {
   async getAll(): Promise<UserQueryResponse> {
     return {
-      status: 200,
+      statusCode: 200,
+      status: 'success',
       results: await this.createQueryBuilder().getMany(),
     };
   }
 
   async getDetail(options: string): Promise<UserQueryResponse> {
-    let status: number, message: string, data: UserEntity;
+    let statusCode: number,
+      status: StatusNotificationGRAPHQL,
+      message: string,
+      data: UserEntity;
     data = await this.findOne({ where: { id: options } });
-    status = 404;
+    statusCode = 404;
+    status = 'error';
     message = 'Accounts not found';
     if (data) {
-      status = 200;
+      statusCode = 200;
+      status = 'success';
       message = '';
     }
     return {
+      statusCode,
       status,
       message,
       data,
@@ -41,9 +49,10 @@ export class UserEntityRepository extends Repository<UserEntity> {
   }
 
   async createNewUser(options: CreateNewUserInput): Promise<UserQueryResponse> {
-    let status: number, message: string;
+    let status: StatusNotificationGRAPHQL, statusCode: number, message: string;
     message = 'Username or email already exists, please choose another.';
-    status = 400;
+    statusCode = 400;
+    status = 'error';
     const check = await this.findOne({
       where: [
         {
@@ -57,12 +66,12 @@ export class UserEntityRepository extends Repository<UserEntity> {
     const match_password = options.password !== options.confirm_password;
     if (match_password) {
       message = "Password don't match";
-      status = 400;
     }
 
-    if (!check) {
+    if (!check && !match_password) {
       message = 'Accounts has been created';
-      status = 201;
+      statusCode = 201;
+      status = 'success';
       const create = new UserEntity();
       create.username = options.username;
       create.email = options.email;
@@ -77,13 +86,15 @@ export class UserEntityRepository extends Repository<UserEntity> {
     }
     return {
       status,
+      statusCode,
       message,
     };
   }
   async resetUser(options: resetUserInput): Promise<UserQueryResponse> {
-    let message: string, status: number;
+    let message: string, statusCode: number, status: StatusNotificationGRAPHQL;
     message = 'Accounts not found, please check again';
-    status = 404;
+    statusCode = 404;
+    status = 'error';
     const check = await this.findOne({
       where: [
         {
@@ -102,12 +113,14 @@ export class UserEntityRepository extends Repository<UserEntity> {
     if (check) {
       message =
         'Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.';
-      status = 200;
+      statusCode = 200;
+      status = 'success';
       await transpoter(check.email);
     }
     return {
       message,
       status,
+      statusCode,
     };
   }
 }

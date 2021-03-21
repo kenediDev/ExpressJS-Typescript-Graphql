@@ -66,6 +66,18 @@ export class GeneralQuery {
   signin: string;
   @Field(() => String, { nullable: false })
   signup: string;
+  @Field(() => String, { nullable: true })
+  category: string;
+  @Field(() => String, { nullable: true })
+  search: string;
+  @Field(() => String, { nullable: true })
+  basket: string;
+  @Field(() => String, { nullable: true })
+  notification: string;
+  @Field(() => String, { nullable: true })
+  message: string;
+  @Field(() => String, { nullable: true })
+  already: string;
 }
 
 @ObjectType()

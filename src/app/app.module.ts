@@ -7,10 +7,30 @@ import { APOLLO_OPTIONS } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
 import { InMemoryCache } from '@apollo/client/core';
 import { prod } from '../../__prod__';
+import { StoreModule } from '@ngrx/store';
+import { reducers } from '../store';
+import { StoreDevtoolsModule } from '@ngrx/store-devtools';
+import { StoreRouterConnectingModule } from '@ngrx/router-store';
+import { AuthComponent } from './auth/auth.component';
+import { RouterModule } from '@angular/router';
+import { routes } from '../routers/router.component';
+import { FormsModule } from '@angular/forms';
+import { DefaultComponent } from './default/default.component';
 
 @NgModule({
-  declarations: [AppComponent],
-  imports: [BrowserModule, AppRoutingModule, HttpClientModule],
+  declarations: [AppComponent, AuthComponent, DefaultComponent],
+  imports: [
+    BrowserModule,
+    AppRoutingModule,
+    HttpClientModule,
+    StoreModule.forRoot(reducers),
+    StoreDevtoolsModule.instrument({
+      maxAge: 10,
+    }),
+    StoreRouterConnectingModule.forRoot(),
+    RouterModule.forRoot(routes),
+    FormsModule
+  ],
   providers: [
     {
       provide: APOLLO_OPTIONS,

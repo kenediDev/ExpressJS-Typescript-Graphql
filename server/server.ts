@@ -70,9 +70,9 @@ con();
 if (process.env.TESTING.toString() === 'false') {
   app.use('/static', express.static(path.join(__dirname, 'server/static')));
   app.use(express.static(path.join(__dirname, '../dist')));
-  app.use('*', (req: Request, res: Response) => {
-    return res.sendFile(path.join(__dirname, '../dist/index.html'));
-  });
+  // app.use('*', (req: Request, res: Response) => {
+  //   return res.sendFile(path.join(__dirname, '../dist/index.html'));
+  // });
   app.listen(PORT, () => {
     console.log('application running');
   });

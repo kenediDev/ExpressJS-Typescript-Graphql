@@ -4,14 +4,20 @@ import { secretKey } from './key';
 import { Repository } from 'typeorm';
 import { loginUserInput } from '../schema/input/userInput';
 import { UserQueryResponse } from '../schema/query/userQuery';
+import { StatusNotificationGRAPHQL } from '../schema/types/interface';
+import bcrypt from 'bcrypt';
 
 export const authenticateJWT = async (
   options: loginUserInput,
   con: Repository<UserEntity>
 ): Promise<UserQueryResponse> => {
-  let message: string, status: number, token: any;
+  let message: string,
+    statusCode: number,
+    status: StatusNotificationGRAPHQL,
+    token: any;
   message = 'Inccorect Username or Password';
-  status = 400;
+  statusCode = 400;
+  status = 'error';
   const check = await con.findOne({
     where: [
       {
@@ -22,16 +28,21 @@ export const authenticateJWT = async (
       },
     ],
   });
-  if (check && check.verifyHash(options.password)) {
-    status = 200;
-    message = '';
-    token = await jwt.sign({ user: check }, secretKey, {
-      algorithm: 'RS256',
-    });
+  if (check) {
+    const hash = await bcrypt.compareSync(options.password, check.password);
+    if (!hash) {
+      statusCode = 200;
+      status = 'success';
+      message = '';
+      token = await jwt.sign({ user: check }, secretKey, {
+        algorithm: 'RS256',
+      });
+    }
   }
 
   return {
     status,
+    statusCode,
     message,
     token,
   };

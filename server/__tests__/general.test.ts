@@ -65,7 +65,7 @@ test('Test Fetch Graphql General', async () => {
           forgotted: 'Forgotted Password ?',
         },
         user: {
-          username: 'String',
+          username: 'Username',
           email: 'Email',
           first_name: 'First Name',
           last_name: 'Last Name',

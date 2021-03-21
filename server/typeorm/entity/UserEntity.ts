@@ -82,9 +82,4 @@ export class UserEntity extends BaseEntity {
   async retrieveUpdateAt() {
     this.updateAt = new Date();
   }
-
-  async verifyHash(args: string) {
-    const hash = await bcrypt.compare(args, this.password);
-    return hash;
-  }
 }

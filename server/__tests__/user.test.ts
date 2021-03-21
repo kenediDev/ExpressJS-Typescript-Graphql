@@ -6,7 +6,7 @@ test('Test Fetch All User Graphql', async () => {
   const query = `
     query {
         getAll {
-          status
+          statusCode
         }
       }
     `;
@@ -17,7 +17,7 @@ test('Test Fetch All User Graphql', async () => {
   expect(res).toEqual({
     data: {
       getAll: {
-        status: '200',
+        statusCode: 200,
       },
     },
   });
@@ -27,7 +27,7 @@ test('Test Get Detail User', async () => {
   const query = `
         query getDetail($options: String!) {
             getDetail(options: $options) {
-                status
+                statusCode
             }
         }
     `;
@@ -42,7 +42,7 @@ test('Test Get Detail User', async () => {
   expect(res).toEqual({
     data: {
       getDetail: {
-        status: '200',
+        statusCode: 200,
       },
     },
   });
@@ -52,7 +52,7 @@ test('Test Record New User', async () => {
   const mutation = `
         mutation createNewuser($options: CreateNewUserInput!) {
             createNewuser(options: $options) {
-                status
+                statusCode
                 message
             }
         }
@@ -72,7 +72,7 @@ test('Test Record New User', async () => {
   expect(res).toEqual({
     data: {
       createNewuser: {
-        status: '201',
+        statusCode: 201,
         message: 'Accounts has been created',
       },
     },
@@ -83,7 +83,7 @@ test('Test Reset User', async () => {
   const mutation = `
         mutation resetUser($options: resetUserInput!) {
             resetUser(options: $options) {
-                status
+                statusCode
                 message
             }
         }
@@ -101,7 +101,7 @@ test('Test Reset User', async () => {
   expect(res).toEqual({
     data: {
       resetUser: {
-        status: '200',
+        statusCode: 200,
         message:
           'Check your email for a link to reset your password. If it doesn’t appear within a few minutes, check your spam folder.',
       },
@@ -113,7 +113,7 @@ test('Test User Login', async () => {
   const mutation = `
     mutation login($options: loginUserInput!) {
       login(options: $options) {
-        status
+        statusCode
       }
     }
   `;
@@ -131,7 +131,7 @@ test('Test User Login', async () => {
   expect(res).toEqual({
     data: {
       login: {
-        status: '200',
+        statusCode: 200,
       },
     },
   });

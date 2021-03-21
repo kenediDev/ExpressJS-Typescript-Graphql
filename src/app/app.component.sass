@@ -1,0 +1,411 @@
+$color: #ed3833
+$color-author: #ed38339e
+$color-text: rgb(130 130 130)
+$color-transparent: #8a8a8a26
+
+.kkn-nav
+  display: flex
+  align-items: center
+  justify-content: space-evenly
+  height: 75px
+  box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+  -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+  -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+  img
+    width: 120px
+    height: 50px
+  .kkn-nav-group-left
+    display: flex
+    align-items: center
+    justify-content: center
+    .kkn-btn-category
+      color: $color
+      border: none
+      outline: none
+      cursor: pointer
+      background-color: transparent
+      font-weight: bold
+      margin-left: 10px
+      margin-right: 10px
+    .kkn-nav-group-input
+      width: 460px
+      background-color: white
+      height: 40px
+      box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      border-radius: 20px
+      display: flex
+      align-items: center
+      justify-content: center
+      overflow: hidden
+      margin-right: 10px
+      input
+        height: 100%
+        width: 100%
+        border: none
+        outline: none
+        padding-left: 15px
+        padding-right: 15px
+      i
+        height: 100%
+        width: 50px
+        background-color: $color
+        color: white
+        display: flex
+        align-items: center
+        justify-content: center
+        cursor: pointer
+    .kkn-btn-cart
+      background-color: $color-transparent
+      margin-left: 7px
+      margin-right: 7px
+      width: 30px
+      height: 30px
+      border-radius: 10px
+      display: flex
+      align-items: center
+      justify-content: center
+      border: none
+      cursor: pointer
+      &:hover
+        background-color: transparent
+        transition: .2s
+      i
+        color: $color
+        font-size: 16px
+    .kkn-store
+      margin-left: 10px
+      border-color: transparent
+      border-left-color: $color
+      border-style: solid
+      border-width: 2px
+      padding-left: 20px
+      .kkn-btn-store
+        border: none
+        outline: none
+        background-color: transparent
+        cursor: pointer
+        i
+          color: $color
+          margin-right: 5px
+        span
+          font-size: 14px
+          color: black
+  .kkn-nav-group-right
+    .kkn-btn-t
+      cursor: pointer
+      border: none
+      outline: none
+      background-color: $color
+      width: 80px
+      margin-right: 3px
+      margin-left: 3px
+      height: 32px
+      border-radius: 20px
+      text-transform: capitalize
+      color: white
+      box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+    .kkn-nav-group-right-author
+      display: flex
+      align-items: center
+      justify-content: center
+      cursor: pointer
+      border-style: solid
+      border-width: 2px
+      border-color: white
+      border-radius: 10px
+      box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      img
+        width: 40px
+        height: 40px
+        border-radius: 10px
+
+  .kkn-nav-group-right-bars
+    display: none
+    visibility: hidden
+
+.kkn-nav-bottom
+  display: none
+  visibility: hidden
+
+@media screen and ( max-width: 1008px )
+  .kkn-nav
+    .kkn-nav-group-left
+      .kkn-btn-category
+        display: none
+        visibility: hidden
+      .kkn-store
+        display: none
+        visibility: hidden
+    .kkn-nav-group-right
+      display: none
+      outline: none
+    .kkn-nav-group-right-bars
+      display: flex
+      visibility: visible
+      button
+        border: none
+        outline: none
+        background-color: transparent
+        cursor: pointer
+        i
+          color: $color
+          font-size: 20px
+
+@media screen and ( max-width: 867px )
+  .kkn-nav
+    .kkn-nav-group-left
+      .kkn-nav-group-input
+        width: 300px
+
+@media screen and ( max-width: 701px )
+  .kkn-nav
+    .kkn-nav-group-left
+      .kkn-nav-group-input
+        width: 200px
+
+@media screen and ( max-width: 547px )
+  .kkn-nav
+    justify-content: center
+    padding-left: 15px
+    padding-right: 15px
+    .kkn-nav-logo
+      width: 80px
+      heigh: 30px
+    .kkn-nav-group-right-bars
+      margin-left: 10px
+
+@media screen and ( max-width: 494px )
+  .kkn-nav
+    .kkn-nav-logo
+      display: none
+      visibility: hidden
+    .kkn-nav-group-left
+      .kkn-nav-group-input
+        width: 100%
+
+  .kkn-nav-bottom
+    position: fixed
+    visibility: visible
+    bottom: 0
+    width: 100%
+    height: 50px
+    background-color: white
+    box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+    -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+    -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+    display: flex
+    align-items: center
+    justify-content: center
+    .kkn-nav-logo
+      width: 120px
+      height: 40px
+
+// Drawer
+
+.kkn-drawer
+  animation: drawer-open 2s
+  animation-fill-mode: forwards
+
+.kkn-drawer-cls
+  animation: drawer-close 2s
+  animation-fill-mode: forwards
+
+.kkn-drawer-cl
+  width: 100%
+  height: 100%
+  background-color: #bdbdbd4f
+  position: fixed
+  z-index: 999
+  top: 0
+
+.kkn-drawer,
+.kkn-drawer-cls
+  background-color: white
+  position: fixed
+  top: 0
+  width: 420px
+  height: 100%
+  background-color: white
+  z-index: 1000
+  box-shadow: 0px 0px 14px -3px rgba(0,0,0,0.75)
+  -webkit-box-shadow: 0px 0px 14px -3px rgba(0,0,0,0.75)
+  -moz-box-shadow: 0px 0px 14px -3px rgba(0,0,0,0.75)
+  border-top-right-radius: 60px
+  overflow: hidden
+  .kkn-drawer-logo
+    width: 90%
+    margin: auto
+    padding-top: 15px
+    .kkn-nav-logo
+      width: 200px
+      height: 60px
+  .kkn-drawer-group
+    width: 90%
+    padding-top: 15px
+    display: flex
+    align-items: center
+    justify-content: space-between
+    margin: auto
+    .kkn-drawer-group-input
+      background-color: white
+      box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      height: 32px
+      width: 320px
+      display: flex
+      align-items: center
+      border-radius: 10px
+      overflow: hidden
+      input
+        width: 100%
+        height: 100%
+        border: none
+        outline: none
+        padding-left: 15px
+        padding-right: 15px
+      i
+        width: 40px
+        height: 100%
+        color: white
+        background-color: $color
+        display: flex
+        align-items: center
+        justify-content: center
+    .kkn-drawer-close
+      border: none
+      outline: none
+      background-color: transparent
+      margin-left: 20px
+      margin-right: 10px
+      cursor: pointer
+      i
+        color: $color
+        font-size: 22px
+  .kkn-drawer-list
+    display: flex
+    flex-direction: column
+    width: 90%
+    margin: auto
+    margin-top: 20px
+    a
+      margin-bottom: 5px
+      box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+      height: 32px
+      display: flex
+      align-items: center
+      padding-left: 15px
+      padding-right: 15px
+      border-radius: 10px
+      color: $color
+      text-decoration: none
+      i
+        margin-right: 10px
+      span
+        font-weight: bold
+
+@keyframes drawer-open
+  from
+    left: -2000px
+    top: 0
+  to
+    left: 0
+    top: 0
+
+@keyframes drawer-close
+  from
+    left: 0
+    top: 0
+  to
+    left: -2000px
+    top: 0
+
+@media screen and ( max-width: 446px )
+  .kkn-drawer
+    width: 98%
+
+.visibility
+  display: none
+  visibility: hidden
+
+// Notification
+
+.kkn-notification
+  animation: notification-open 2s
+  animation-fill-mode: forwards
+
+.kkn-notification-cls
+  animation: notification-cls 2s
+  animation-fill-mode: forwards
+
+#kkn-notification-success
+  background-color: green
+
+#kkn-notification-error
+  background-color: red
+
+
+.kkn-notification,
+.kkn-notification-cls
+  position: fixed
+  bottom: 10px
+  right: 10px
+  width: 460px
+  padding-top: 10px
+  padding-bottom: 10px
+  background-color: $color
+  border-radius: 10px
+  display: flex
+  padding-left: 10px
+  padding-right: 10px
+  box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+  -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+  -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+  .kkn-notification-text
+    width: 100%
+    color: white
+  .kkn-btn-notification
+    width: 32px
+    height: 32px
+    border-radius: 10px
+    display: flex
+    align-items: center
+    justify-content: center
+    margin-left: 6px
+    border: none
+    outline: none
+    box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+    -webkit-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+    -moz-box-shadow: 0px 0px 10px -7px rgba(0,0,0,0.75)
+    cursor: pointer
+    i
+      font-size: 20px
+      color: $color
+
+#kkn-btn-notification-success
+  i
+    color: green
+
+#kkn-btn-notification-error
+  i
+    color: red
+
+@keyframes notification-open
+  from
+    right: -1200px
+  to
+    right: 10px
+
+@keyframes notification-cls
+  from
+    right: 10px
+  to
+    right: -1200px
