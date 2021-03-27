@@ -3,7 +3,6 @@ import express from 'express';
 import { Connection, createConnection, useContainer } from 'typeorm';
 import schema from '../config/sconfig';
 import Con from '../config/tconfig';
-var bodyparser = require('body-parser');
 import path from 'path';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -17,6 +16,8 @@ import FilesystemBackend from 'i18next-node-fs-backend';
 import Cache from 'i18next-localstorage-cache';
 import postProcessor from 'i18next-sprintf-postprocessor';
 import LanguageDetector from 'i18next-browser-languagedetector';
+import { MiddlewareGraphql } from '../middleware/middlewareGraphql';
+var bodyparser = require('body-parser');
 
 export class App {
   public port: string = process.env.port || '8000';
@@ -88,7 +89,12 @@ export class App {
   async apolloMiddleware(con: Connection) {
     const apollo = new ApolloServer({
       schema: await schema,
-      context: () => con,
+      context: ({ req }): MiddlewareGraphql => {
+        return {
+          req,
+          con,
+        };
+      },
     });
     apollo.applyMiddleware({ app: this.app });
   }
@@ -107,8 +113,10 @@ export class App {
   }
 
   listen() {
-    this.app.listen(this.port, () => {
-      console.log('running application ' + this.port);
-    });
+    if (!process.env.test || false) {
+      this.app.listen(this.port, () => {
+        console.log('running application ' + this.port);
+      });
+    }
   }
 }
