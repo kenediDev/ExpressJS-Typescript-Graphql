@@ -1,0 +1,29 @@
+[
+  {
+    "login": "Masuk",
+    "signin": "Masuk",
+    "signup": "Daftar",
+    "register": "Daftar",
+    "reset": "Reset",
+    "forgotted": "Lupa kata sandi?",
+    "create_new": "Baru akun baru?",
+    "already": "Sudah ada akun?",
+    "login_title": "Masuk ke Asik",
+    "register_title": "Gabung ke Asik",
+    "child_register_title": "Buat aku anda",
+    "forgotted_title": "Reset kata sandi",
+    "child_forgotted_title": "Masukkan alamat email terverifikasi akun pengguna Anda dan kami akan mengirimkan tautan pengaturan ulang kata sandi.",
+    "username": "Nama pengguna",
+    "email": "Email",
+    "avatar": "Avatar",
+    "first_name": "Nama depan",
+    "last_name": "Nama bekalang",
+    "country": "Negara",
+    "province": "Provinsi",
+    "city": "Kota",
+    "address": "Alamat",
+    "password": "Kata sandi",
+    "old_password": "Kata sandi lama",
+    "confirm_password": "Konfirmasi kata sandi"
+  }
+]

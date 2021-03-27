@@ -1,0 +1,29 @@
+[
+  {
+    "login": "Login",
+    "signin": "Sign in",
+    "signup": "Sign up",
+    "register": "Register",
+    "reset": "Reset",
+    "forgotted": "Forgotted Password?",
+    "create_new": "Create an accounts?",
+    "already": "Already exits accounts?",
+    "login_title": "Sign in to Asik",
+    "register_title": "Join Asik",
+    "child_register_title": "Create your account",
+    "forgotted_title": "Reset your password",
+    "child_forgotted_title": "Enter your user account's verified email address and we will send you a password reset link.",
+    "username": "Username",
+    "email": "Email",
+    "avatar": "Avatar",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "country": "Country",
+    "province": "Province",
+    "city": "City",
+    "address": "Address",
+    "password": "Password",
+    "old_password": "Old password",
+    "confirm_password": "Confirm password"
+  }
+]
