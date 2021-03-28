@@ -16,7 +16,7 @@ afterAll(async () => {
 
 interface Options {
   source: any;
-  variableValues?: Maybe<{ options: string }>;
+  variableValues?: Maybe<{ options: any }>;
   contextValue?: any;
 }
 

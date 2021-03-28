@@ -17,6 +17,11 @@ import Cache from 'i18next-localstorage-cache';
 import postProcessor from 'i18next-sprintf-postprocessor';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import { MiddlewareGraphql } from '../middleware/middlewareGraphql';
+import middleware from 'webpack-dev-middleware';
+import hotMiddleware from 'webpack-hot-middleware';
+import webpack from 'webpack';
+import webConfig from '../../wconf/webpack.common';
+import webDev from '../../wconf/webpack.dev';
 var bodyparser = require('body-parser');
 
 export class App {
@@ -68,6 +73,19 @@ export class App {
       })
     );
     this.translate();
+    if (!process.env.prod || false) {
+      this.webpackMiddleware();
+    }
+  }
+
+  private webpackMiddleware() {
+    const compiler = webpack(webDev);
+    this.app.use(middleware(compiler));
+    this.app.use(
+      hotMiddleware(compiler, {
+        publicPath: webConfig.output.publicPath,
+      })
+    );
   }
 
   public translate() {

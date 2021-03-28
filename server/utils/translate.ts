@@ -5,7 +5,7 @@ import id from '../prefix/translate/id/translation.json';
 export const i18nINIT: InitOptions = {
   fallbackLng: ['en', 'id'],
   lng: 'en',
-  debug: true,
+  debug: false,
   keySeparator: false,
   preload: ['id', 'en'],
   interpolation: {
