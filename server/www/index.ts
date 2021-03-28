@@ -24,17 +24,6 @@ export class App {
   public app: express.Application = express();
   constructor() {
     useContainer(Container);
-    i18next
-      .use(i18nMiddleware.LanguageDetector)
-      .use(FilesystemBackend)
-      .use(Cache)
-      .use(postProcessor)
-      .use(LanguageDetector)
-      .init(i18nINIT, (err, t) => {
-        if (err) return console.log('somehing went wrong loading', err);
-        t('login');
-      });
-    i18next.isInitialized;
     this.middleware();
   }
 
@@ -78,12 +67,21 @@ export class App {
         },
       })
     );
-    this.app.use(
-      i18nMiddleware.handle(i18next, {
-        ignoreRoutes: [''],
-        removeLngFromUrl: false,
-      })
-    );
+    this.translate();
+  }
+
+  public translate() {
+    i18next
+      .use(i18nMiddleware.LanguageDetector)
+      .use(FilesystemBackend)
+      .use(Cache)
+      .use(postProcessor)
+      .use(LanguageDetector)
+      .init(i18nINIT, (err, t) => {
+        if (err) return console.log('somehing went wrong loading', err);
+        t('login');
+      });
+    return i18next;
   }
 
   async apolloMiddleware(con: Connection) {
@@ -93,6 +91,7 @@ export class App {
         return {
           req,
           con,
+          i18n: this.translate(),
         };
       },
     });

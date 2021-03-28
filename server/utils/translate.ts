@@ -3,10 +3,11 @@ import en from '../prefix/translate/en/translation.json';
 import id from '../prefix/translate/id/translation.json';
 
 export const i18nINIT: InitOptions = {
-  fallbackLng: ['en'],
+  fallbackLng: ['en', 'id'],
   lng: 'en',
   debug: true,
   keySeparator: false,
+  preload: ['id', 'en'],
   interpolation: {
     escapeValue: false,
   },
