@@ -27,6 +27,8 @@ import { i18nINIT } from '../utils/translate';
 import i18next from 'i18next';
 import i18nextMiddleware from 'i18next-express-middleware';
 import i18nBackend from 'i18next-node-fs-backend';
+import i18nCache from 'i18next-localstorage-cache';
+import i18nsprintf from 'i18next-sprintf-postprocessor';
 
 export class App {
   public port: string = process.env.port || '8000';
@@ -100,6 +102,8 @@ export class App {
     i18next
       .use(i18nextMiddleware.LanguageDetector)
       .use(i18nBackend)
+      .use(i18nCache)
+      .use(i18nsprintf)
       .init({
         ...i18nINIT,
       });

@@ -40,7 +40,6 @@
     "graphql": "^15.5.0",
     "i18n": "^0.13.2",
     "i18next": "^20.1.0",
-    "i18next-browser-languagedetector": "^6.1.0",
     "i18next-express-middleware": "^2.0.0",
     "i18next-localstorage-cache": "^1.1.1",
     "i18next-node-fs-backend": "^2.1.3",
