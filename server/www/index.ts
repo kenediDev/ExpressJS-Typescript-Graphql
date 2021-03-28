@@ -1,5 +1,6 @@
+// General Package
 import { ApolloServer } from 'apollo-server-express';
-import express from 'express';
+import express, { Request } from 'express';
 import { Connection, createConnection, useContainer } from 'typeorm';
 import schema from '../config/sconfig';
 import Con from '../config/tconfig';
@@ -9,20 +10,23 @@ import morgan from 'morgan';
 import fs from 'fs';
 import { Container } from 'typeorm-typedi-extensions';
 import jwt from 'express-jwt';
-import i18nMiddleware from 'i18next-express-middleware';
-import i18next from 'i18next';
-import { i18nINIT } from '../utils/translate';
-import FilesystemBackend from 'i18next-node-fs-backend';
-import Cache from 'i18next-localstorage-cache';
-import postProcessor from 'i18next-sprintf-postprocessor';
-import LanguageDetector from 'i18next-browser-languagedetector';
+var bodyparser = require('body-parser');
+var cookiesParser = require('cookie-parser');
+// Configure Graphql as Middleware
 import { MiddlewareGraphql } from '../middleware/middlewareGraphql';
+
+// Webpack
 import middleware from 'webpack-dev-middleware';
 import hotMiddleware from 'webpack-hot-middleware';
 import webpack from 'webpack';
 import webConfig from '../../wconf/webpack.common';
 import webDev from '../../wconf/webpack.dev';
-var bodyparser = require('body-parser');
+
+// I18NEXT
+import { i18nINIT } from '../utils/translate';
+import i18next from 'i18next';
+import i18nextMiddleware from 'i18next-express-middleware';
+import i18nBackend from 'i18next-node-fs-backend';
 
 export class App {
   public port: string = process.env.port || '8000';
@@ -45,6 +49,7 @@ export class App {
       })
     );
     this.app.use(cors());
+    this.app.use(cookiesParser());
     this.app.use('/static', express.static(path.join(__dirname, '../static')));
     this.app.use(
       morgan('common', {
@@ -72,13 +77,15 @@ export class App {
         },
       })
     );
-    this.translate();
     if (!process.env.prod || false) {
       this.webpackMiddleware();
     }
+
+    this.translate();
   }
 
   private webpackMiddleware() {
+    // Webpack
     const compiler = webpack(webDev);
     this.app.use(middleware(compiler));
     this.app.use(
@@ -89,34 +96,18 @@ export class App {
   }
 
   public translate() {
+    // I18next
     i18next
-      .use(i18nMiddleware.LanguageDetector)
-      .use(FilesystemBackend)
-      .use(Cache)
-      .use(postProcessor)
-      .use(LanguageDetector)
-      .init(i18nINIT, (err, t) => {
-        if (err) return console.log('somehing went wrong loading', err);
-        t('login');
+      .use(i18nextMiddleware.LanguageDetector)
+      .use(i18nBackend)
+      .init({
+        ...i18nINIT,
       });
-    return i18next;
-  }
-
-  async apolloMiddleware(con: Connection) {
-    const apollo = new ApolloServer({
-      schema: await schema,
-      context: ({ req }): MiddlewareGraphql => {
-        return {
-          req,
-          con,
-          i18n: this.translate(),
-        };
-      },
-    });
-    apollo.applyMiddleware({ app: this.app });
+    this.app.use(i18nextMiddleware.handle(i18next));
   }
 
   async createCon(): Promise<Connection> {
+    // Typeorm
     const con = createConnection(Con);
     await con
       .then(async (cons) => {
@@ -127,6 +118,21 @@ export class App {
         return err;
       });
     return con;
+  }
+
+  async apolloMiddleware(con: Connection) {
+    // Apollo
+    const apollo = new ApolloServer({
+      schema: await schema,
+      context: (req: Request): MiddlewareGraphql => {
+        i18next.changeLanguage('id');
+        return {
+          req,
+          con,
+        };
+      },
+    });
+    apollo.applyMiddleware({ app: this.app });
   }
 
   listen() {
