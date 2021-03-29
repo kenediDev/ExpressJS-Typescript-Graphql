@@ -82,7 +82,7 @@ export class App {
     this.app.use(
       morgan('common', {
         stream: fs.createWriteStream(
-          path.join(__dirname, '../../log/access.log'),
+          path.join(__dirname, '../logger/access.log'),
           { flags: 'a' }
         ),
       })

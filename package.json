@@ -13,7 +13,7 @@
     "lint": "ng lint",
     "e2e": "ng e2e",
     "ts": "ts-node server/server.ts",
-    "nodemon": "rm -rf dist && nodemon server/server.ts",
+    "nodemon": "rm -rf dist && rm server/logger/access.log && nodemon server/server.ts",
     "jest": "cross-env test=true jest --watchAll server/**/*.test.ts",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
     "entities": "npm run typeorm -- entity:create --config ./server/config/tconfig.ts --connection -d ./server/typeorm/entity --name",
