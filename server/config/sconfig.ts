@@ -1,4 +1,8 @@
-import { buildTypeDefsAndResolvers, ResolversMap } from 'type-graphql';
+import {
+  buildSchema,
+  buildTypeDefsAndResolvers,
+  ResolversMap,
+} from 'type-graphql';
 import Container from 'typedi';
 import { GeneralResolver } from '../schema/resolver/resolverGeneral';
 import path from 'path';
@@ -23,3 +27,11 @@ export const schema = async (): Promise<{
     },
   });
 };
+
+export const schemaTest = buildSchema({
+  resolvers: [GeneralResolver],
+  validate: false,
+  container: Container,
+  authMode: 'null',
+  authChecker: AuthCheker,
+});

@@ -3,6 +3,7 @@ import { graphql } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { Connection } from 'typeorm';
 import { app } from '../server';
+import { schemaTest } from '../config/sconfig';
 
 let con: Connection;
 beforeAll(async () => {
@@ -25,7 +26,7 @@ export const callSchema = async ({
   language,
 }: Options) => {
   return graphql({
-    schema: await app.schemaMiddleware(),
+    schema: await schemaTest,
     source,
     variableValues,
     contextValue: {

@@ -10,7 +10,7 @@ import {
 // General Package
 import express from 'express';
 import { Connection, createConnection, useContainer } from 'typeorm';
-import { schema } from '../config/sconfig';
+import { schema, schemaTest } from '../config/sconfig';
 import Con from '../config/tconfig';
 import path from 'path';
 import cors from 'cors';
@@ -48,6 +48,7 @@ dotenv.config();
 export class App {
   public port: string = process.env.port || '8000';
   public app: express.Application = express();
+  public test = process.env.test || false;
   constructor() {
     useContainer(Container);
     this.middleware();
@@ -122,7 +123,6 @@ export class App {
 
   public translate() {
     // I18next
-    const app = this.app;
     i18next
       .use(i18nextMiddleware.LanguageDetector)
       .use(i18nBackend)
@@ -148,10 +148,29 @@ export class App {
     return con;
   }
 
-  async apolloMiddleware(con: Connection) {
+  async apolloMiddleware(con?: Connection) {
+    let schemas: any;
+    // Schema
+    if (this.test) {
+      schemas = await schemaTest;
+    } else {
+      const { resolvers } = await schema();
+      const typeDefs = mergeTypeDefs(
+        loadFilesSync(path.join(__dirname, '../schema/**/*.graphql'))
+      );
+
+      schemas = makeExecutableSchema({
+        typeDefs,
+        resolvers,
+        schemaDirectives: {
+          upper: UpperCaseDirective,
+        },
+      });
+    }
+
     // Apollo
     const apollo = new ApolloServer({
-      schema: await this.schemaMiddleware(),
+      schema: schemas,
       context: ({ req, res }): MiddlewareGraphql => {
         return {
           con,
@@ -165,24 +184,8 @@ export class App {
     apollo.applyMiddleware({ app: this.app });
   }
 
-  public async schemaMiddleware(): Promise<any> {
-    const { resolvers }: any = await schema();
-    const typeDefs = mergeTypeDefs(
-      loadFilesSync(path.join(__dirname, '../schema/**/*.graphql'))
-    );
-
-    const scm = makeExecutableSchema({
-      typeDefs,
-      resolvers,
-      schemaDirectives: {
-        upper: UpperCaseDirective,
-      },
-    });
-    return scm;
-  }
-
   listen() {
-    if (!process.env.test || false) {
+    if (!this.test) {
       this.app.listen(this.port, () => {
         console.log('running application ' + this.port);
       });
