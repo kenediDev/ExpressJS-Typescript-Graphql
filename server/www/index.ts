@@ -165,8 +165,8 @@ export class App {
     apollo.applyMiddleware({ app: this.app });
   }
 
-  public async schemaMiddleware() {
-    const { resolvers } = await schema();
+  public async schemaMiddleware(): Promise<any> {
+    const { resolvers }: any = await schema();
     const typeDefs = mergeTypeDefs(
       loadFilesSync(path.join(__dirname, '../schema/**/*.graphql'))
     );
