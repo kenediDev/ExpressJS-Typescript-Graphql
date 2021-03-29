@@ -1,12 +1,11 @@
-import { makeExecutableSchema } from '@graphql-tools/schema';
-import { GraphQLSchema } from 'graphql';
 import { buildTypeDefsAndResolvers, ResolversMap } from 'type-graphql';
 import Container from 'typedi';
 import { GeneralResolver } from '../schema/resolver/resolverGeneral';
+import path from 'path';
 
 import { AuthCheker } from './authCheker';
 
-const extensions = async (): Promise<{
+export const schema = async (): Promise<{
   typeDefs: any;
   resolvers: ResolversMap<any, any>;
 }> => {
@@ -17,12 +16,10 @@ const extensions = async (): Promise<{
     authMode: 'null',
     authChecker: AuthCheker,
     dateScalarMode: 'timestamp',
+    emitSchemaFile: {
+      path: path.resolve(__dirname, '../schema/typeDefs/schema.graphql'),
+      commentDescriptions: true,
+      sortedSchema: false,
+    },
   });
 };
-
-async function schema(): Promise<GraphQLSchema> {
-  const { typeDefs, resolvers } = await extensions();
-  return makeExecutableSchema({ typeDefs, resolvers });
-}
-
-export default schema;

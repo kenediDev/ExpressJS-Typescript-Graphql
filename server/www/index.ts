@@ -1,9 +1,16 @@
 // Graphql
+import 'apollo-cache-control';
+import responseCachePlugin from 'apollo-server-plugin-response-cache';
 import { ApolloServer } from 'apollo-server-express';
+import {
+  loadFilesSync,
+  makeExecutableSchema,
+  mergeTypeDefs,
+} from 'graphql-tools';
 // General Package
 import express from 'express';
 import { Connection, createConnection, useContainer } from 'typeorm';
-import schema from '../config/sconfig';
+import { schema } from '../config/sconfig';
 import Con from '../config/tconfig';
 import path from 'path';
 import cors from 'cors';
@@ -33,6 +40,7 @@ import i18nextMiddleware from 'i18next-express-middleware';
 import i18nBackend from 'i18next-node-fs-backend';
 import i18nCache from 'i18next-localstorage-cache';
 import i18nsprintf from 'i18next-sprintf-postprocessor';
+import { UpperCaseDirective } from '../schema/directive/utils';
 
 dotenv.config();
 
@@ -142,7 +150,7 @@ export class App {
   async apolloMiddleware(con: Connection) {
     // Apollo
     const apollo = new ApolloServer({
-      schema: await schema(),
+      schema: await this.schemaMiddleware(),
       context: ({ req, res }): MiddlewareGraphql => {
         return {
           con,
@@ -150,9 +158,26 @@ export class App {
       },
       playground: true,
       introspection: true,
+      plugins: [responseCachePlugin()],
     });
 
     apollo.applyMiddleware({ app: this.app });
+  }
+
+  public async schemaMiddleware() {
+    const { resolvers } = await schema();
+    const typeDefs = mergeTypeDefs(
+      loadFilesSync(path.join(__dirname, '../schema/**/*.graphql'))
+    );
+
+    const scm = makeExecutableSchema({
+      typeDefs,
+      resolvers,
+      schemaDirectives: {
+        upper: UpperCaseDirective,
+      },
+    });
+    return scm;
   }
 
   listen() {

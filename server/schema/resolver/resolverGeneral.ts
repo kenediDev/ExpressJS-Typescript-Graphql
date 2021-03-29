@@ -1,6 +1,5 @@
-import { Ctx, Query, Resolver } from 'type-graphql';
+import { Query, Resolver } from 'type-graphql';
 import { Service } from 'typedi';
-import { MiddlewareGraphql } from '../../middleware/middlewareGraphql';
 import { GeneralQueryResponse } from '../query/QueryGeneral';
 import { GeneralService } from '../service/generalService';
 
@@ -10,7 +9,12 @@ export class GeneralResolver {
   constructor(private service: GeneralService) {}
 
   @Query(() => GeneralQueryResponse)
-  async general(@Ctx() {}: MiddlewareGraphql): Promise<GeneralQueryResponse> {
+  async general(): Promise<GeneralQueryResponse> {
     return this.service.general();
+  }
+
+  @Query(() => String)
+  async generalTest(): Promise<String> {
+    return 'hello worlds';
   }
 }

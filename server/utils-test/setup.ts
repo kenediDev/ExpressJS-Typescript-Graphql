@@ -1,9 +1,10 @@
 import 'reflect-metadata';
-import { graphql } from 'graphql';
+import { graphql, GraphQLSchema } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { Connection } from 'typeorm';
-import schema from '../config/sconfig';
+import { schema } from '../config/sconfig';
 import { app } from '../server';
+import { makeExecutableSchema } from 'apollo-server-express';
 
 let con: Connection;
 beforeAll(async () => {
@@ -20,13 +21,21 @@ interface Options {
   language?: any;
 }
 
+const sc = async (): Promise<GraphQLSchema> => {
+  const { resolvers, typeDefs } = await schema();
+  return makeExecutableSchema({
+    resolvers,
+    typeDefs,
+  });
+};
+
 export const callSchema = async ({
   source,
   variableValues,
   language,
 }: Options) => {
   return graphql({
-    schema: await schema(),
+    schema: await sc(),
     source,
     variableValues,
     contextValue: {
