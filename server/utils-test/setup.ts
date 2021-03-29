@@ -26,7 +26,7 @@ export const callSchema = async ({
   language,
 }: Options) => {
   return graphql({
-    schema: await schema,
+    schema: await schema(),
     source,
     variableValues,
     contextValue: {

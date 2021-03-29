@@ -1,7 +1,5 @@
 // Graphql
 import { ApolloServer } from 'apollo-server-express';
-import { loadFilesSync, mergeTypeDefs } from 'graphql-tools';
-import { print } from 'graphql';
 // General Package
 import express from 'express';
 import { Connection, createConnection, useContainer } from 'typeorm';
@@ -142,16 +140,9 @@ export class App {
   }
 
   async apolloMiddleware(con: Connection) {
-    // TypeDefs
-    const typeDefs = mergeTypeDefs(
-      loadFilesSync(path.join(__dirname, '../typedefs'), {
-        extensions: ['graphql'],
-      })
-    );
     // Apollo
     const apollo = new ApolloServer({
-      schema: await schema,
-      typeDefs,
+      schema: await schema(),
       context: ({ req, res }): MiddlewareGraphql => {
         return {
           con,
