@@ -105,6 +105,7 @@
     "@types/morgan": "^1.9.2",
     "@types/multer": "^1.4.5",
     "@types/node": "^12.11.1",
+    "@types/webpack-env": "^1.16.0",
     "babel-jest": "^26.6.3",
     "babel-loader": "^8.2.2",
     "babel-plugin-import-graphql": "^2.8.1",

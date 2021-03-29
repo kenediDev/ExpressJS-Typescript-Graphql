@@ -41,6 +41,7 @@ import i18nBackend from 'i18next-node-fs-backend';
 import i18nCache from 'i18next-localstorage-cache';
 import i18nsprintf from 'i18next-sprintf-postprocessor';
 import { UpperCaseDirective } from '../schema/directive/utils';
+import { __prod__ } from '../internal/__prod__';
 
 dotenv.config();
 
@@ -103,7 +104,7 @@ export class App {
         },
       })
     );
-    if (!process.env.prod || false) {
+    if (Boolean(!__prod__)) {
       this.webpackMiddleware();
     }
   }
@@ -156,7 +157,7 @@ export class App {
           con,
         };
       },
-      playground: process.env.prod || false ? true : false,
+      playground: Boolean(!__prod__),
       introspection: true,
       plugins: [responseCachePlugin()],
     });
