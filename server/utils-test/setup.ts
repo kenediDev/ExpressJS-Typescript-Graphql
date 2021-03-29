@@ -1,4 +1,4 @@
-import "reflect-metadata"
+import 'reflect-metadata';
 import { graphql } from 'graphql';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { Connection } from 'typeorm';
@@ -17,18 +17,27 @@ afterAll(async () => {
 interface Options {
   source: any;
   variableValues?: Maybe<{ options: any }>;
-  contextValue?: any;
+  language?: any;
 }
 
 export const callSchema = async ({
   source,
   variableValues,
-  contextValue,
+  language,
 }: Options) => {
   return graphql({
     schema: await schema,
     source,
     variableValues,
-    contextValue,
+    contextValue: {
+      req: {
+        session: {
+          lng: language,
+        },
+      },
+      res: {
+        clearCookie: jest.fn(),
+      },
+    },
   });
 };

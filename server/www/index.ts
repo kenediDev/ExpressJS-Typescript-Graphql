@@ -1,6 +1,9 @@
-// General Package
+// Graphql
 import { ApolloServer } from 'apollo-server-express';
-import express, { Request } from 'express';
+import { loadFilesSync, mergeTypeDefs } from 'graphql-tools';
+import { print } from 'graphql';
+// General Package
+import express from 'express';
 import { Connection, createConnection, useContainer } from 'typeorm';
 import schema from '../config/sconfig';
 import Con from '../config/tconfig';
@@ -10,8 +13,11 @@ import morgan from 'morgan';
 import fs from 'fs';
 import { Container } from 'typeorm-typedi-extensions';
 import jwt from 'express-jwt';
+import dotenv from 'dotenv';
+
 var bodyparser = require('body-parser');
 var cookiesParser = require('cookie-parser');
+var session = require('express-session');
 // Configure Graphql as Middleware
 import { MiddlewareGraphql } from '../middleware/middlewareGraphql';
 
@@ -30,6 +36,8 @@ import i18nBackend from 'i18next-node-fs-backend';
 import i18nCache from 'i18next-localstorage-cache';
 import i18nsprintf from 'i18next-sprintf-postprocessor';
 
+dotenv.config();
+
 export class App {
   public port: string = process.env.port || '8000';
   public app: express.Application = express();
@@ -41,6 +49,7 @@ export class App {
   private middleware() {
     this.createCon();
     this.extensions();
+    this.translate();
   }
 
   private extensions() {
@@ -52,6 +61,15 @@ export class App {
     );
     this.app.use(cors());
     this.app.use(cookiesParser());
+    this.app.use(
+      session({
+        name: 'session',
+        secret: 'secret',
+        resave: true,
+        saveUninitialized: true,
+        cookie: { secure: true },
+      })
+    );
     this.app.use('/static', express.static(path.join(__dirname, '../static')));
     this.app.use(
       morgan('common', {
@@ -82,8 +100,6 @@ export class App {
     if (!process.env.prod || false) {
       this.webpackMiddleware();
     }
-
-    this.translate();
   }
 
   private webpackMiddleware() {
@@ -99,6 +115,7 @@ export class App {
 
   public translate() {
     // I18next
+    const app = this.app;
     i18next
       .use(i18nextMiddleware.LanguageDetector)
       .use(i18nBackend)
@@ -125,17 +142,25 @@ export class App {
   }
 
   async apolloMiddleware(con: Connection) {
+    // TypeDefs
+    const typeDefs = mergeTypeDefs(
+      loadFilesSync(path.join(__dirname, '../typedefs'), {
+        extensions: ['graphql'],
+      })
+    );
     // Apollo
     const apollo = new ApolloServer({
       schema: await schema,
-      context: (req: Request): MiddlewareGraphql => {
-        i18next.changeLanguage('id');
+      typeDefs,
+      context: ({ req, res }): MiddlewareGraphql => {
         return {
-          req,
           con,
         };
       },
+      playground: true,
+      introspection: true,
     });
+
     apollo.applyMiddleware({ app: this.app });
   }
 

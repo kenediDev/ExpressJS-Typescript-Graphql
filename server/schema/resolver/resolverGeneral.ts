@@ -10,9 +10,7 @@ export class GeneralResolver {
   constructor(private service: GeneralService) {}
 
   @Query(() => GeneralQueryResponse)
-  async general(
-    @Ctx() { req }: MiddlewareGraphql
-  ): Promise<GeneralQueryResponse> {
+  async general(@Ctx() {}: MiddlewareGraphql): Promise<GeneralQueryResponse> {
     return this.service.general();
   }
 }

@@ -1,3 +1,4 @@
+import i18next from 'i18next';
 import { callSchema } from '../utils-test/setup';
 
 jest.useFakeTimers();
@@ -39,9 +40,7 @@ test('Get All General', async (done) => {
     `;
   await callSchema({
     source: query,
-    contextValue: {
-      req: 'id',
-    },
+    language: 'id',
   }).then((res) => {
     expect(res.data).toEqual({
       general: {
