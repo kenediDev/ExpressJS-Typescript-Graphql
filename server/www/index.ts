@@ -156,7 +156,7 @@ export class App {
           con,
         };
       },
-      playground: true,
+      playground: process.env.prod || false ? true : false,
       introspection: true,
       plugins: [responseCachePlugin()],
     });
