@@ -1,7 +1,7 @@
-### How to use
+### How to use :fire:
 
 - cp -r .env.example .env
 - configure file on .env
 - npm install
 - npm run nodemon
-- run for production -> npm run webpack:prod :fire:
+- run for production -> npm run webpack:prod
