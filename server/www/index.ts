@@ -7,8 +7,10 @@ import {
   makeExecutableSchema,
   mergeTypeDefs,
 } from 'graphql-tools';
+import * as directives from '../schema/directives';
 // General Package
 import express from 'express';
+import requestLanguage from 'express-request-language';
 import { Connection, createConnection, useContainer } from 'typeorm';
 import { schema, schemaTest } from '../config/sconfig';
 import Con from '../config/tconfig';
@@ -40,7 +42,7 @@ import i18nextMiddleware from 'i18next-express-middleware';
 import i18nBackend from 'i18next-node-fs-backend';
 import i18nCache from 'i18next-localstorage-cache';
 import i18nsprintf from 'i18next-sprintf-postprocessor';
-import { UpperCaseDirective } from '../schema/directive/utils';
+import { i18n as internationalization, unpackCatalog } from 'lingui-i18n';
 import { __prod__ } from '../internal/__prod__';
 
 dotenv.config();
@@ -69,6 +71,11 @@ export class App {
     );
     this.app.use(cors());
     this.app.use(cookiesParser());
+    this.app.use(
+      requestLanguage({
+        languages: ['en', 'id'],
+      })
+    );
     this.app.use(
       session({
         name: 'session',
@@ -163,7 +170,8 @@ export class App {
         typeDefs,
         resolvers,
         schemaDirectives: {
-          upper: UpperCaseDirective,
+          upper: directives.UpperCaseDirective,
+          locale: directives.LocaleDirective,
         },
       });
     }
@@ -172,6 +180,7 @@ export class App {
     const apollo = new ApolloServer({
       schema: schemas,
       context: ({ req, res }): MiddlewareGraphql => {
+        i18next.changeLanguage(req.language);
         return {
           con,
         };
