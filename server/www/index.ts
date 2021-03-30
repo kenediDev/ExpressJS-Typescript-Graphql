@@ -42,7 +42,6 @@ import i18nextMiddleware from 'i18next-express-middleware';
 import i18nBackend from 'i18next-node-fs-backend';
 import i18nCache from 'i18next-localstorage-cache';
 import i18nsprintf from 'i18next-sprintf-postprocessor';
-import { i18n as internationalization, unpackCatalog } from 'lingui-i18n';
 import { __prod__ } from '../internal/__prod__';
 
 dotenv.config();
@@ -180,7 +179,9 @@ export class App {
     const apollo = new ApolloServer({
       schema: schemas,
       context: ({ req, res }): MiddlewareGraphql => {
-        i18next.changeLanguage(req.language);
+        if (!this.test) {
+          i18next.changeLanguage(req.language);
+        }
         return {
           con,
         };
