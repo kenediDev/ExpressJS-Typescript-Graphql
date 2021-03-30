@@ -1,6 +1,6 @@
 import { Field, ObjectType } from 'type-graphql';
 
-@ObjectType({ description: 'General Field' })
+@ObjectType()
 class GeneralQuery {
   @Field(() => String)
   signin: string;
@@ -30,7 +30,7 @@ class GeneralQuery {
   child_forgotted_title: string;
 }
 
-@ObjectType({ description: 'User Field' })
+@ObjectType()
 export class UserQuery {
   @Field(() => String)
   username: string;
@@ -58,7 +58,7 @@ export class UserQuery {
   confirm_password: string;
 }
 
-@ObjectType({ description: 'Group' })
+@ObjectType()
 export class GeneralQueryResponse {
   @Field(() => UserQuery)
   user: UserQuery;

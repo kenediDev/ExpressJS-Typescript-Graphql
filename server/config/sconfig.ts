@@ -20,11 +20,12 @@ export const schema = async (): Promise<{
     authMode: 'null',
     authChecker: AuthCheker,
     dateScalarMode: 'timestamp',
-    emitSchemaFile: {
-      path: path.resolve(__dirname, '../schema/typeDefs/schema.graphql'),
-      commentDescriptions: true,
-      sortedSchema: false,
-    },
+    globalMiddlewares: [],
+    // emitSchemaFile: {
+    //   path: path.resolve(__dirname, '../schema/typeDefs/schema.graphql'),
+    //   commentDescriptions: true,
+    //   sortedSchema: false,
+    // },
   });
 };
 

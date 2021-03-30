@@ -1,0 +1,35 @@
+type GeneralQueryResponse {
+  user: UserQuery!
+  general: GeneralQuery!
+}
+
+type UserQuery {
+  username: String! @upper
+  email: String!
+  avatar: String!
+  first_name: String!
+  last_name: String!
+  country: String!
+  province: String!
+  address: String!
+  city: String!
+  password: String!
+  old_password: String!
+  confirm_password: String!
+}
+
+type GeneralQuery {
+  signin: String!
+  signup: String!
+  login: String!
+  register: String!
+  forgotted: String!
+  reset: String!
+  already: String!
+  create_new: String!
+  login_title: String!
+  register_title: String!
+  child_register_title: String!
+  forgotted_title: String!
+  child_forgotted_title: String!
+}
