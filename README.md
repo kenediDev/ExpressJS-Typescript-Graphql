@@ -4,4 +4,4 @@
 - configure file on .env
 - npm install
 - npm run nodemon
-- run for production -> npm run webpack:prod
+- run for production -> npm run webpack:prod :fire:
