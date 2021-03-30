@@ -18,3 +18,4 @@ git pull origin master
 - npm install
 - npm run nodemon
 - run for production -> npm run webpack:prod
+-
