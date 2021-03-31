@@ -4,6 +4,8 @@ import { Maybe } from 'graphql/jsutils/Maybe';
 import { Connection } from 'typeorm';
 import { app } from '../server';
 import { schemaTest } from '../config/sconfig';
+import path from 'path';
+import fs from 'fs';
 
 let con: Connection;
 beforeAll(async () => {
@@ -11,33 +13,26 @@ beforeAll(async () => {
 });
 
 afterAll(async () => {
-  await con.close();
+  if (await con) {
+    await con.close();
+  }
 });
+
+const read = fs.readFileSync(path.join(__dirname, './requirementsTest.txt'), {
+  encoding: 'utf-8',
+});
+
+export const active = Boolean(parseInt(read));
 
 interface Options {
   source: any;
   variableValues?: Maybe<{ options: any }>;
-  language?: any;
 }
 
-export const callSchema = async ({
-  source,
-  variableValues,
-  language,
-}: Options) => {
+export const callSchema = async ({ source, variableValues }: Options) => {
   return graphql({
     schema: await schemaTest,
     source,
     variableValues,
-    contextValue: {
-      req: {
-        session: {
-          lng: language,
-        },
-      },
-      res: {
-        clearCookie: jest.fn(),
-      },
-    },
   });
 };

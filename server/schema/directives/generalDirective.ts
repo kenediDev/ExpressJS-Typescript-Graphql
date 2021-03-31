@@ -13,16 +13,3 @@ export class UpperCaseDirective extends SchemaDirectiveVisitor {
     };
   }
 }
-
-export class LocaleDirective extends SchemaDirectiveVisitor {
-  visitFieldDefinition(field: GraphQLField<any, any>) {
-    const { resolve = defaultFieldResolver } = field;
-    field.resolve = async function (...args) {
-      const result = await resolve.apply(this, args);
-      if (typeof result === 'string') {
-        return result;
-      }
-      return result;
-    };
-  }
-}

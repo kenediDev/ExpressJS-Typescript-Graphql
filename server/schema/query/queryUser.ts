@@ -1,4 +1,4 @@
-import { Field, ObjectType } from 'type-graphql';
+import { Field, Int, ObjectType } from 'type-graphql';
 import { UserEntity } from '../../typeorm/entity/UserEntity';
 import { Status } from '../../types/status';
 
@@ -13,7 +13,7 @@ export class UserQueryResponse {
   @Field(() => String, { nullable: false })
   status: Status;
 
-  @Field(() => String, { nullable: false })
+  @Field(() => Int, { nullable: false })
   statusCode: number;
 
   @Field(() => String, { nullable: true })

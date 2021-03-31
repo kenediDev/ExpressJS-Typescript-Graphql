@@ -1,3 +1,3 @@
-import { UpperCaseDirective, LocaleDirective } from './generalDirective';
+import { UpperCaseDirective } from './generalDirective';
 
-export { UpperCaseDirective, LocaleDirective };
+export { UpperCaseDirective };

@@ -112,7 +112,9 @@ export class App {
       })
     );
     if (Boolean(!__prod__)) {
-      this.webpackMiddleware();
+      if (!this.test) {
+        this.webpackMiddleware();
+      }
     }
   }
 
@@ -170,7 +172,6 @@ export class App {
         resolvers,
         schemaDirectives: {
           upper: directives.UpperCaseDirective,
-          locale: directives.LocaleDirective,
         },
       });
     }

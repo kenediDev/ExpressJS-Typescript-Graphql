@@ -53,6 +53,7 @@
     "graphql": "^15.5.0",
     "graphql-middleware": "^6.0.5",
     "graphql-playground-middleware-express": "^1.7.22",
+    "graphql-request": "^3.4.0",
     "graphql-tools": "^7.0.4",
     "i18n": "^0.13.2",
     "i18next": "^20.1.0",
