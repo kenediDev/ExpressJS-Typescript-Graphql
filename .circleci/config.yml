@@ -5,13 +5,17 @@ orbs:
 
 jobs:
   test_development:
-    executor: node/default
+    executor:
+      name: node/default
+      tag: "14"
     steps:
       - checkout
       - node/install-packages:
+          pkg-manager: npm
           override-ci-command: npm install --save
       - run:
           command: npm run test
+          name: run npm test
 
 workflows:
   test_my_app:
