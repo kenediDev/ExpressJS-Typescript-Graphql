@@ -1,16 +1,17 @@
 import { createConnection } from 'typeorm';
 import path from 'path';
 import dotenv from 'dotenv';
+import { test } from '../internal/__test_config__';
 
 dotenv.config();
 
 export default {
-  type: process.env.test ? 'sqlite' : 'mysql',
+  type: test ? 'sqlite' : 'mysql',
   username: process.env.db_user,
   password: process.env.db_pass,
-  database: process.env.test
+  database: test
     ? path.join(__dirname, '../../dbTest.sqlite')
-    : process.env.db_pass,
+    : process.env.db_name,
   synchronize: true,
   logging: false,
   migrations: [path.join(__dirname, '../typeorm/migrations/*.ts')],

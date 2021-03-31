@@ -6,6 +6,7 @@ import {
 import Container from 'typedi';
 import { GeneralResolver } from '../schema/resolver/resolverGeneral';
 import { UserResolver } from '../schema/resolver/userResolver';
+import path from 'path';
 
 import { AuthCheker } from './authCheker';
 
@@ -22,7 +23,8 @@ export const schema = async (): Promise<{
     authMode: 'null',
     authChecker: AuthCheker,
     dateScalarMode: 'timestamp',
-    globalMiddlewares: [],
+    // globalMiddlewares: [],
+    // emitSchemaFile: path.resolve(__dirname, "../schema/typeDefs/schema.graphql")
     // emitSchemaFile: {
     //   path: path.resolve(__dirname, '../schema/typeDefs/schema.graphql'),
     //   commentDescriptions: false,
@@ -37,4 +39,5 @@ export const schemaTest = buildSchema({
   container: Container,
   authMode: 'null',
   authChecker: AuthCheker,
+  // emitSchemaFile: path.resolve(__dirname, "__snapshots__.gql")
 });

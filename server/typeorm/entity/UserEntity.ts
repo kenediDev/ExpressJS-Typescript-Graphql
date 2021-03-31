@@ -7,6 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import bcrypt from 'bcrypt';
+import { test } from '../../internal/__test_config__';
 
 @ObjectType()
 @Entity('user')
@@ -31,11 +32,14 @@ export class UserEntity extends BaseEntity {
   last_name: string;
 
   @Field(() => Date, { nullable: true })
-  @Column('datetime', { nullable: true })
+  @Column(test ? 'datetime' : 'timestamp', { nullable: true })
   createAt: Date;
 
   @Field(() => Date, { nullable: true })
-  @Column('datetime', { nullable: false, onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column(test ? 'datetime' : 'timestamp', {
+    nullable: false,
+    onUpdate: 'CURRENT_TIMESTAMP',
+  })
   updateAt: Date;
 
   @Field(() => String, { nullable: true })

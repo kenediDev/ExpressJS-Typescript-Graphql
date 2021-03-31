@@ -162,10 +162,10 @@ export class App {
     if (this.test) {
       schemas = await schemaTest;
     } else {
-      const { resolvers } = await schema();
-      const typeDefs = mergeTypeDefs(
-        loadFilesSync(path.join(__dirname, '../schema/**/*.graphql'))
-      );
+      const { resolvers, typeDefs } = await schema();
+      // const typeDefs = mergeTypeDefs(
+      //   loadFilesSync(path.join(__dirname, '../schema/schema.graphql'))
+      // );
 
       schemas = makeExecutableSchema({
         typeDefs,
