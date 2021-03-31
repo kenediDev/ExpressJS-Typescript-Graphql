@@ -12,4 +12,4 @@ build:
 test_development:
     stage: test_development
     script:
-        - npm run node:test
+        - npm run gitlab:test

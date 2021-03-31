@@ -13,6 +13,7 @@
     "ts": "ts-node server/server.ts",
     "nodemon": "rm -rf dist && rm server/logger/access.log && nodemon server/server.ts",
     "node:test": "cross-env test=true jest server/**/*.test.ts",
+    "gitlab:test": "cross-env-shell test=true \"echo $test\" jest server**/*.test.ts",
     "typeorm": "ts-node -r tsconfig-paths/register ./node_modules/.bin/typeorm",
     "entities": "npm run typeorm -- entity:create --config ./server/config/tconfig.ts --connection -d ./server/typeorm/entity --name",
     "create": "npm run typeorm -- migration:create --config ./server/config/tconfig.ts --connection -d ./server/typeorm/migrations --name",
