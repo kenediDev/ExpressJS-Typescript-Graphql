@@ -33,3 +33,12 @@ export class UpdateUserInput {
   @Field(() => String, { nullable: true })
   last_name: string;
 }
+
+@InputType()
+export class LoginUserInput {
+  @Field(() => String, { nullable: false })
+  username: string;
+
+  @Field(() => String, { nullable: false })
+  password: string;
+}

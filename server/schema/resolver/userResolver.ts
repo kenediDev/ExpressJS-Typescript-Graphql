@@ -1,6 +1,10 @@
 import { Arg, Mutation, Resolver } from 'type-graphql';
 import { Service } from 'typedi';
-import { CreateNewUserInput, UpdateUserInput } from '../input/userInput';
+import {
+  CreateNewUserInput,
+  LoginUserInput,
+  UpdateUserInput,
+} from '../input/userInput';
 import { UserQueryResponse } from '../query/queryUser';
 import { UserService } from '../service/userService';
 
@@ -20,5 +24,11 @@ export class UserResolver {
     @Arg('options') options: UpdateUserInput
   ): Promise<UserQueryResponse> {
     return this.service.updateUser(options);
+  }
+  @Mutation(() => UserQueryResponse)
+  async loginUser(
+    @Arg('options', { validate: true }) options: LoginUserInput
+  ): Promise<UserQueryResponse> {
+    return this.service.loginUser(options);
   }
 }

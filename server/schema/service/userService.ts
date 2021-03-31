@@ -3,9 +3,15 @@ import { EntityRepository, Repository } from 'typeorm';
 import { InjectRepository } from 'typeorm-typedi-extensions';
 import { UserEntity } from '../../typeorm/entity/UserEntity';
 import { Status } from '../../types/status';
-import { CreateNewUserInput, UpdateUserInput } from '../input/userInput';
+import {
+  CreateNewUserInput,
+  LoginUserInput,
+  UpdateUserInput,
+} from '../input/userInput';
 import { UserQueryResponse } from '../query/queryUser';
 import { ValidatorError } from '../utils/validatorError';
+import jwt from 'jsonwebtoken';
+import fs from 'fs';
 
 @Service()
 @EntityRepository(UserEntity)
@@ -54,6 +60,31 @@ export class UserRepository extends Repository<UserEntity> {
       message,
     };
   }
+
+  async loginUser(options: LoginUserInput): Promise<UserQueryResponse> {
+    let status: Status = 'Failure',
+      statusCode: number = 400,
+      message: string = 'Inccorect username or password',
+      token: string;
+    const check = await this.findOne({ where: { username: options.username } });
+    const check_hash = await check.verifyPassword(options.password);
+    if (check && check_hash) {
+      token = jwt.sign(
+        { user: check },
+        fs.readFileSync('jwtRS256.key', 'utf-8'),
+        { algorithm: 'RS256' }
+      );
+      status = 'Success';
+      statusCode = 200;
+    } else {
+      throw new ValidatorError(message);
+    }
+    return {
+      status,
+      statusCode,
+      token,
+    };
+  }
 }
 
 @Service()
@@ -66,5 +97,9 @@ export class UserService {
 
   async updateUser(options: UpdateUserInput): Promise<UserQueryResponse> {
     return this.repo.updateUser(options);
+  }
+
+  async loginUser(options: LoginUserInput): Promise<UserQueryResponse> {
+    return this.repo.loginUser(options);
   }
 }

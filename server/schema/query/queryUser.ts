@@ -18,4 +18,7 @@ export class UserQueryResponse {
 
   @Field(() => String, { nullable: true })
   message?: string;
+
+  @Field(() => String, { nullable: true })
+  token?: string;
 }

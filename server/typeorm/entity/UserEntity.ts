@@ -31,11 +31,11 @@ export class UserEntity extends BaseEntity {
   last_name: string;
 
   @Field(() => Date, { nullable: true })
-  @Column('timestamp', { nullable: true })
+  @Column('datetime', { nullable: true })
   createAt: Date;
 
   @Field(() => Date, { nullable: true })
-  @Column('timestamp', { nullable: false, onUpdate: 'CURRENT_TIMESTAMP' })
+  @Column('datetime', { nullable: false, onUpdate: 'CURRENT_TIMESTAMP' })
   updateAt: Date;
 
   @Field(() => String, { nullable: true })
@@ -50,5 +50,9 @@ export class UserEntity extends BaseEntity {
       this.password,
       Math.floor((Math.random() + 1) * Math.random())
     );
+  }
+
+  async verifyPassword(options) {
+    return bcrypt.compareSync(options, this.password);
   }
 }

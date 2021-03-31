@@ -17,7 +17,7 @@ export const schema = async (): Promise<{
 }> => {
   return await buildTypeDefsAndResolvers({
     resolvers: resolvers,
-    validate: true,
+    validate: false,
     container: Container,
     authMode: 'null',
     authChecker: AuthCheker,
@@ -25,7 +25,7 @@ export const schema = async (): Promise<{
     globalMiddlewares: [],
     // emitSchemaFile: {
     //   path: path.resolve(__dirname, '../schema/typeDefs/schema.graphql'),
-    //   commentDescriptions: true,
+    //   commentDescriptions: false,
     //   sortedSchema: false,
     // },
   });
@@ -33,7 +33,7 @@ export const schema = async (): Promise<{
 
 export const schemaTest = buildSchema({
   resolvers: resolvers,
-  validate: true,
+  validate: false,
   container: Container,
   authMode: 'null',
   authChecker: AuthCheker,

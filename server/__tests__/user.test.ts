@@ -45,6 +45,35 @@ describe('User', () => {
   });
 
   if (active) {
+    test('Login User', async (done) => {
+      const user = await UserEntity.findOneOrFail();
+      const mutation = `
+        mutation loginUser($options: LoginUserInput!) {
+          loginUser(options: $options) {
+            status
+            statusCode
+            token
+          }
+        }
+      `;
+      const res = await callSchema({
+        source: mutation,
+        variableValues: {
+          options: {
+            username: user.username,
+            password: 'Password',
+          },
+        },
+      });
+      expect(res.data).toEqual({
+        loginUser: {
+          status: 'Success',
+          statusCode: 200,
+          token: res.data.loginUser.token,
+        },
+      });
+      return done();
+    });
     test('Update User', async (done) => {
       const user = await UserEntity.findOne();
       const mutation = `
