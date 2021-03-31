@@ -1,0 +1,19 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@3.0.0
+
+jobs:
+  test_development:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          override-ci-command: npm install --save
+      - run:
+          command: npm run test
+
+workflows:
+  test_my_app:
+    jobs:
+      - test_development
