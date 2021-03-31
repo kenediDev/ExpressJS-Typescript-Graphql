@@ -4,7 +4,7 @@ orbs:
   node: circleci/node@3.0.0
 
 jobs:
-  test_development:
+  test_expressjs_development:
     executor:
       name: node/default
       tag: "13.14"
@@ -14,10 +14,10 @@ jobs:
           pkg-manager: npm
           override-ci-command: npm install --save
       - run:
-          command: npm run test
+          command: npm run node:test
           name: run npm test
 
 workflows:
   test_my_app:
     jobs:
-      - test_development
+      - test_expressjs_development
