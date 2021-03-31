@@ -1,17 +1,17 @@
 version: 2.1
 
-orbs:
-  node: circleci/node@14.16.0
-
 jobs:
-  test:
-    executor: node/default
+  run_tests:
     steps:
       - checkout
-      - node/install-packages:
-        override-ci-command: npm install
-      - run: npm run test
+      - run:
+        name: node/install-packages
+        command: npm install --save
+      - run:
+        name: node/test
+        command: npm run test
 
 workflows:
-  test_my_app:
-    - test
+  build_test:
+    jobs:
+      - run_tests
