@@ -11,10 +11,10 @@ cache:
 install_packages:
   stage: install_packages
   script:
-   - npm install
+   - npm install --save
    artifacts:
     paths:
-      - node_modules
+      - node_modules/
 
 test_app_development:
   stage: test_app_development
