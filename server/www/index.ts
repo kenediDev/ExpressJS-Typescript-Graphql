@@ -2,11 +2,7 @@
 import 'apollo-cache-control';
 import responseCachePlugin from 'apollo-server-plugin-response-cache';
 import { ApolloServer } from 'apollo-server-express';
-import {
-  loadFilesSync,
-  makeExecutableSchema,
-  mergeTypeDefs,
-} from 'graphql-tools';
+import { makeExecutableSchema } from 'graphql-tools';
 import * as directives from '../schema/directives';
 // General Package
 import express from 'express';
@@ -163,10 +159,6 @@ export class App {
       schemas = await schemaTest;
     } else {
       const { resolvers, typeDefs } = await schema();
-      // const typeDefs = mergeTypeDefs(
-      //   loadFilesSync(path.join(__dirname, '../schema/schema.graphql'))
-      // );
-
       schemas = makeExecutableSchema({
         typeDefs,
         resolvers,

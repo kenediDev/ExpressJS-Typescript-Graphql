@@ -18,11 +18,31 @@ afterAll(async () => {
   }
 });
 
-const read = fs.readFileSync(path.join(__dirname, './requirementsTest.txt'), {
-  encoding: 'utf-8',
-});
+interface Context {
+  name: string;
+  value: string | number;
+}
 
-export const active = Boolean(parseInt(read));
+const read = fs.readFileSync(
+  path.join(__dirname, '../utils-test/requirementsTest.json'),
+  { encoding: 'utf-8' }
+);
+
+export const writes = (context: Context) => {
+  const parse = JSON.parse(read).map((x) => {
+    return {
+      count: context.name === 'total' ? context.value : x.count,
+      token: context.name === 'token' ? context.value : x.token,
+    };
+  });
+  return parse;
+};
+
+export const active = JSON.parse(read)[0].count;
+
+export const token = JSON.parse(read)[0].token;
+
+console.log(active, token);
 
 interface Options {
   source: any;

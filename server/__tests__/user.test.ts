@@ -1,6 +1,6 @@
 import faker from 'faker';
 import { UserEntity } from '../typeorm/entity/UserEntity';
-import { active, callSchema } from '../utils-test/setup';
+import { writes, callSchema, active } from '../utils-test/setup';
 import fs from 'fs';
 import path from 'path';
 
@@ -8,8 +8,13 @@ describe('User', () => {
   test('Check', async (done) => {
     const check = await UserEntity.createQueryBuilder().getCount();
     fs.writeFileSync(
-      path.join(__dirname, '../utils-test/requirementsTest.txt'),
-      `${check}`
+      path.join(__dirname, '../utils-test/requirementsTest.json'),
+      `${JSON.stringify(
+        writes({
+          name: 'total',
+          value: check,
+        })
+      )}`
     );
     return done();
   });
@@ -65,6 +70,15 @@ describe('User', () => {
           },
         },
       });
+      fs.writeFileSync(
+        path.join(__dirname, '../utils-test/requirementsTest.json'),
+        `${JSON.stringify(
+          writes({
+            name: 'token',
+            value: res.data.loginUser.token,
+          })
+        )}`
+      );
       expect(res.data).toEqual({
         loginUser: {
           status: 'Success',
