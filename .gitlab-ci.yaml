@@ -1,22 +1,15 @@
 image: node:latest
 
 stages:
-  - install_packages
-  - test_app_development
+    - build
+    - test_development
 
-cache:
-  paths:
-    - node_modules/
+build:
+    stage: build
+    script:
+        - npm install --save
 
-install_packages:
-  stage: install_packages
-  script:
-   - npm install --save
-   artifacts:
-    paths:
-      - node_modules/
-
-test_app_development:
-  stage: test_app_development
-  script:
-    - npm run node:test
+test_development:
+    stage: test_development
+    script:
+        - npm run node:test
