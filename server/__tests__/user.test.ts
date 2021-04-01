@@ -1,10 +1,20 @@
-import { gql } from 'graphql-request';
 import faker from 'faker';
 import { UserEntity } from '../typeorm/entity/UserEntity';
 import { callSchema, active, token } from '../utils-test/setup';
 import fs from 'fs';
 import path from 'path';
 import jsonwebtoken from 'jsonwebtoken';
+import { T } from '../middleware/middlewareGraphql';
+import {
+  queryAllUser,
+  queryDetailUser,
+  queryMe,
+} from './typeDefs/types/userTypeDefs';
+import {
+  mutationLoginUser,
+  mutationRecordUser,
+  mutationUpdateUser,
+} from './typeDefs/mutation/userMutation';
 
 describe('User', () => {
   test('Check', async (done) => {
@@ -27,17 +37,8 @@ describe('User', () => {
     return done();
   });
   test('Record User', async (done) => {
-    const mutation = gql`
-      mutation createUser($options: CreateNewUserInput!) {
-        createUser(options: $options) {
-          message
-          status
-          statusCode
-        }
-      }
-    `;
     const res = await callSchema({
-      source: mutation,
+      source: mutationRecordUser,
       variableValues: {
         options: {
           username: faker.internet.userName(),
@@ -48,6 +49,7 @@ describe('User', () => {
       },
     });
     expect(res.data.createUser.statusCode).toEqual(201);
+    expect(res.data).not.toEqual(null);
     expect(res.data).toEqual({
       createUser: {
         message: 'Accounts has been created',
@@ -61,17 +63,8 @@ describe('User', () => {
   if (active) {
     test('Login User', async (done) => {
       const user = await UserEntity.findOneOrFail();
-      const mutation = gql`
-        mutation loginUser($options: LoginUserInput!) {
-          loginUser(options: $options) {
-            status
-            statusCode
-            token
-          }
-        }
-      `;
       const res = await callSchema({
-        source: mutation,
+        source: mutationLoginUser,
         variableValues: {
           options: {
             username: user.username,
@@ -94,7 +87,8 @@ describe('User', () => {
           })
         )}`
       );
-      // expect(res.data.loginUser.statusCode).toEqual(200);
+      expect(res.data.loginUser.statusCode).toEqual(200);
+      expect(res.data).not.toEqual(null);
       expect(res.data).toEqual({
         loginUser: {
           status: 'Success',
@@ -105,28 +99,21 @@ describe('User', () => {
       return done();
     });
     test('Update User', async (done) => {
-      const user = await UserEntity.findOne();
-      const mutation = gql`
-        mutation updateUser($options: UpdateUserInput!) {
-          updateUser(options: $options) {
-            message
-            status
-            statusCode
-          }
-        }
-      `;
       let req: Request;
       const res = await callSchema({
-        source: mutation,
+        source: mutationUpdateUser,
         variableValues: {
           options: {
-            id: user.id,
             first_name: faker.name.firstName(),
             last_name: faker.name.lastName(),
           },
         },
+        contextValue: {
+          user: (await jsonwebtoken.decode(token)) as T,
+        },
       });
-      // expect(res.data.updateUser.statusCode).toEqual(200);
+      expect(res.data.updateUser.statusCode).toEqual(200);
+      expect(res.data).not.toEqual(null);
       expect(res.data).toEqual({
         updateUser: {
           message: 'Profile has been updated',
@@ -138,48 +125,14 @@ describe('User', () => {
     });
 
     test('Get All User', async (done) => {
-      const query = gql`
-        query {
-          getAllUser {
-            status
-            statusCode
-            results {
-              id
-              username
-              email
-              updateAt
-              accounts {
-                id
-                avatar
-                first_name
-                last_name
-                avatar
-                location {
-                  id
-                  country
-                  province
-                  city
-                  address
-                }
-              }
-            }
-          }
-        }
-      `;
       const res = await callSchema({
-        source: query,
-        variableValues: {
-          options: {
-            query: {
-              token: `Bearer ${token}`,
-            },
-          },
-        },
+        source: queryAllUser,
         contextValue: {
-          user: (await jsonwebtoken.decode(token)) as any,
+          user: (await jsonwebtoken.decode(token)) as T,
         },
       });
       expect(res.data.getAllUser.statusCode).toEqual(200);
+      expect(res.data).not.toEqual(null);
       expect(res.data).toEqual({
         getAllUser: {
           status: 'Success',
@@ -191,49 +144,40 @@ describe('User', () => {
     });
     test('Detail User', async (done) => {
       const detail = await UserEntity.findOne();
-      const query = gql`
-        query getDetail($options: String!) {
-          getDetail(options: $options) {
-            status
-            statusCode
-            user {
-              id
-              username
-              email
-              updateAt
-              accounts {
-                id
-                avatar
-                first_name
-                last_name
-                avatar
-                location {
-                  id
-                  country
-                  province
-                  city
-                  address
-                }
-              }
-            }
-          }
-        }
-      `;
       const res = await callSchema({
-        source: query,
+        source: queryDetailUser,
         variableValues: {
           options: detail.id,
         },
         contextValue: {
-          user: (await jsonwebtoken.decode(token)) as any,
+          user: (await jsonwebtoken.decode(token)) as T,
         },
       });
       expect(res.data.getDetail.statusCode).toEqual(200);
+      expect(res.data).not.toEqual(null);
       expect(res.data).toEqual({
         getDetail: {
           status: 'Success',
           statusCode: 200,
           user: res.data.getDetail.user,
+        },
+      });
+      return done();
+    });
+    test('Me', async (done) => {
+      const res = await callSchema({
+        source: queryMe,
+        contextValue: {
+          user: (await jsonwebtoken.decode(token)) as T,
+        },
+      });
+      expect(res.data.getMe.statusCode).toEqual(200);
+      expect(res.data).not.toEqual(null);
+      expect(res.data).toEqual({
+        getMe: {
+          status: 'Success',
+          statusCode: 200,
+          user: res.data.getMe.user,
         },
       });
       return done();

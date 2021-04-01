@@ -22,12 +22,13 @@ export class UserResolver {
     return this.service.recordUser(options);
   }
 
-  // @Authorized()
+  @Authorized()
   @Mutation(() => UserQueryResponse)
   async updateUser(
-    @Arg('options') options: UpdateUserInput
+    @Arg('options') options: UpdateUserInput,
+    @Ctx() context: MiddlewareGraphql
   ): Promise<UserQueryResponse> {
-    return this.service.updateUser(options);
+    return this.service.updateUser(options, context.user.user.id);
   }
 
   @Mutation(() => UserQueryResponse)
@@ -39,9 +40,7 @@ export class UserResolver {
 
   @Authorized()
   @Query(() => UserQueryResponse)
-  async getAllUser(
-    @Ctx() options: MiddlewareGraphql
-  ): Promise<UserQueryResponse> {
+  async getAllUser(): Promise<UserQueryResponse> {
     return this.service.getall();
   }
 
@@ -49,5 +48,11 @@ export class UserResolver {
   @Query(() => UserQueryResponse)
   async getDetail(@Arg('options') options: string): Promise<UserQueryResponse> {
     return this.service.getDetail(options);
+  }
+
+  @Authorized()
+  @Query(() => UserQueryResponse)
+  async getMe(@Ctx() context: MiddlewareGraphql): Promise<UserQueryResponse> {
+    return this.service.getMe(context.user.user.id);
   }
 }

@@ -1,19 +1,8 @@
 import { AuthChecker } from 'type-graphql';
-
-export interface TUser {
-  user: {
-    id: string;
-    username: string;
-    email: string;
-    createAt: Date;
-    updateAt: Date;
-    password: string;
-  };
-  iat: number;
-}
+import { T } from '../middleware/middlewareGraphql'
 
 export interface TChecker {
-  user: TUser;
+  user: T;
 }
 
 export const AuthCheker: AuthChecker<TChecker> = ({ context }) => {

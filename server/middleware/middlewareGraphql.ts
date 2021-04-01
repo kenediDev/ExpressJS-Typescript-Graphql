@@ -1,9 +1,16 @@
 import { Express, Request, Response } from 'express';
 import { Connection } from 'typeorm';
-import { TUser } from '../config/authCheker';
 
-class T implements Express.User {
-  user: TUser;
+export class T implements Express.User {
+  user: {
+    id: string;
+    username: string;
+    email: string;
+    createAt: Date;
+    updateAt: Date;
+    password: string;
+  };
+  iat: number;
 }
 
 export interface MiddlewareGraphql {

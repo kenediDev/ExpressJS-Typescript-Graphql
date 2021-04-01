@@ -50,11 +50,14 @@ export class UserRepository extends Repository<UserEntity> {
     };
   }
 
-  async updateUser(options: UpdateUserInput): Promise<UserQueryResponse> {
+  async updateUser(
+    options: UpdateUserInput,
+    id: string
+  ): Promise<UserQueryResponse> {
     let status: Status = 'Success',
       statusCode: number = 200,
       message: string = 'Profile has been updated';
-    const check = await this.findOne({ where: { id: options.id } });
+    const check = await this.findOne({ where: { id } });
     if (!check) {
       throw new Error('Accounts not found');
     }
@@ -66,7 +69,7 @@ export class UserRepository extends Repository<UserEntity> {
           last_name: options.last_name,
         },
       })
-      .where('user.id=:id', { id: options.id })
+      .where('user.id=:id', { id })
       .execute();
     return {
       status,
@@ -132,6 +135,27 @@ export class UserRepository extends Repository<UserEntity> {
       status,
       statusCode,
       user: filter,
+    };
+  }
+
+  async getMe(id: string): Promise<UserQueryResponse> {
+    let status: Status = 'Success',
+      statusCode: number = 200;
+    const user = await this.connection
+      .createQueryBuilder(UserEntity, 'user')
+      .where('user.id=:id', {
+        id,
+      })
+      .leftJoinAndSelect('user.accounts', 'accounts')
+      .leftJoinAndSelect('accounts.location', 'country')
+      .getOne();
+    if (!user) {
+      throw new Error('Accounts not found');
+    }
+    return {
+      status,
+      statusCode,
+      user: user,
     };
   }
 }

@@ -21,7 +21,7 @@ var bodyparser = require('body-parser');
 var cookiesParser = require('cookie-parser');
 var session = require('express-session');
 // Configure Graphql as Middleware
-import { MiddlewareGraphql } from '../middleware/middlewareGraphql';
+import { MiddlewareGraphql, T } from '../middleware/middlewareGraphql';
 
 // Webpack
 import middleware from 'webpack-dev-middleware';
@@ -38,7 +38,6 @@ import i18nBackend from 'i18next-node-fs-backend';
 import i18nCache from 'i18next-localstorage-cache';
 import i18nsprintf from 'i18next-sprintf-postprocessor';
 import { __prod__ } from '../internal/__prod__';
-import { TUser } from '../config/authCheker';
 
 dotenv.config();
 
@@ -162,14 +161,12 @@ export class App {
         if (!this.test) {
           i18next.changeLanguage(req.language);
         }
-        const user = req.user as TUser;
+        const user = req.user as T;
         return {
           con,
           req,
           res,
-          user: {
-            user: user,
-          },
+          user: user,
         };
       },
       uploads: {

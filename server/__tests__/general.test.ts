@@ -1,45 +1,11 @@
-import { gql } from 'graphql-request';
 import { callSchema } from '../utils-test/setup';
+import { queryGeneral } from './typeDefs/types/generalTypeDefs';
 
 jest.useFakeTimers();
 
 test('Get All General', async (done) => {
-  const query = gql`
-    query {
-      general {
-        general {
-          signin
-          signup
-          login
-          register
-          forgotted
-          reset
-          already
-          create_new
-          login_title
-          register_title
-          child_register_title
-          forgotted_title
-          child_forgotted_title
-        }
-        user {
-          username
-          email
-          avatar
-          first_name
-          last_name
-          country
-          province
-          address
-          password
-          old_password
-          confirm_password
-        }
-      }
-    }
-  `;
   const res = await callSchema({
-    source: query,
+    source: queryGeneral,
   });
   expect(res.data).toEqual({
     general: {

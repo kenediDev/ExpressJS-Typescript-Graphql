@@ -24,9 +24,6 @@ export class CreateNewUserInput {
 @InputType()
 export class UpdateUserInput {
   @Field(() => String, { nullable: false })
-  id: string;
-
-  @Field(() => String, { nullable: false })
   @MinLength(2)
   first_name: string;
 
