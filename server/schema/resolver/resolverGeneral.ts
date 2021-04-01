@@ -1,4 +1,4 @@
-import { Query, Resolver } from 'type-graphql';
+import { Authorized, Query, Resolver } from 'type-graphql';
 import { Service } from 'typedi';
 import { GeneralQueryResponse } from '../query/QueryGeneral';
 import { GeneralService } from '../service/generalService';

@@ -2,14 +2,12 @@
 import 'apollo-cache-control';
 import responseCachePlugin from 'apollo-server-plugin-response-cache';
 import { ApolloServer } from 'apollo-server-express';
-import { makeExecutableSchema } from 'graphql-tools';
-import * as directives from '../schema/directives';
+import { graphqlUploadExpress } from 'graphql-upload';
 // General Package
 import express from 'express';
 import requestLanguage from 'express-request-language';
 import { Connection, createConnection, useContainer } from 'typeorm';
-import { schema, schemaTest } from '../config/sconfig';
-import Con from '../config/tconfig';
+import { schema } from '../config/sconfig';
 import path from 'path';
 import cors from 'cors';
 import morgan from 'morgan';
@@ -17,6 +15,7 @@ import fs from 'fs';
 import { Container } from 'typeorm-typedi-extensions';
 import jwt from 'express-jwt';
 import dotenv from 'dotenv';
+import Con from '../config/tconfig';
 
 var bodyparser = require('body-parser');
 var cookiesParser = require('cookie-parser');
@@ -39,6 +38,7 @@ import i18nBackend from 'i18next-node-fs-backend';
 import i18nCache from 'i18next-localstorage-cache';
 import i18nsprintf from 'i18next-sprintf-postprocessor';
 import { __prod__ } from '../internal/__prod__';
+import { TUser } from '../config/authCheker';
 
 dotenv.config();
 
@@ -46,15 +46,16 @@ export class App {
   public port: string = process.env.port || '8000';
   public app: express.Application = express();
   public test = process.env.test || false;
+  public path: string = '/graphql';
   constructor() {
     useContainer(Container);
     this.middleware();
   }
 
   private middleware() {
-    this.createCon();
     this.extensions();
     this.translate();
+    this.createCon();
   }
 
   private extensions() {
@@ -90,6 +91,7 @@ export class App {
       })
     );
     this.app.use(
+      this.path,
       jwt({
         secret: fs.readFileSync('jwtRS256.key', 'utf-8'),
         credentialsRequired: false,
@@ -153,38 +155,35 @@ export class App {
   }
 
   async apolloMiddleware(con?: Connection) {
-    let schemas: any;
-    // Schema
-    if (this.test) {
-      schemas = await schemaTest;
-    } else {
-      const { resolvers, typeDefs } = await schema();
-      schemas = makeExecutableSchema({
-        typeDefs,
-        resolvers,
-        schemaDirectives: {
-          upper: directives.UpperCaseDirective,
-        },
-      });
-    }
-
     // Apollo
     const apollo = new ApolloServer({
-      schema: schemas,
+      schema: await schema,
       context: ({ req, res }): MiddlewareGraphql => {
         if (!this.test) {
           i18next.changeLanguage(req.language);
         }
+        const user = req.user as TUser;
         return {
           con,
+          req,
+          res,
+          user: {
+            user: user,
+          },
         };
+      },
+      uploads: {
+        ...graphqlUploadExpress({
+          maxFileSize: 1000000,
+          maxFiles: 10,
+        }),
       },
       playground: Boolean(!__prod__),
       introspection: true,
       plugins: [responseCachePlugin()],
     });
 
-    apollo.applyMiddleware({ app: this.app });
+    apollo.applyMiddleware({ app: this.app, path: this.path });
   }
 
   listen() {

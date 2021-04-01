@@ -1,6 +1,6 @@
 import { Service } from 'typedi';
-import { EntityRepository, Repository } from 'typeorm';
-import { InjectRepository } from 'typeorm-typedi-extensions';
+import { Connection, EntityRepository, Repository } from 'typeorm';
+import { InjectConnection } from 'typeorm-typedi-extensions';
 import { UserEntity } from '../../typeorm/entity/UserEntity';
 import { Status } from '../../types/status';
 import {
@@ -16,6 +16,10 @@ import fs from 'fs';
 @Service()
 @EntityRepository(UserEntity)
 export class UserRepository extends Repository<UserEntity> {
+  constructor(@InjectConnection() private connection: Connection) {
+    super();
+  }
+
   async recordUser(options: CreateNewUserInput): Promise<UserQueryResponse> {
     let status: Status = 'Failure',
       statusCode: number = 400,
@@ -51,9 +55,19 @@ export class UserRepository extends Repository<UserEntity> {
       statusCode: number = 200,
       message: string = 'Profile has been updated';
     const check = await this.findOne({ where: { id: options.id } });
-    check.first_name = options.first_name;
-    check.last_name = options.last_name;
-    await this.save(check);
+    if (!check) {
+      throw new Error('Accounts not found');
+    }
+    await this.createQueryBuilder()
+      .update()
+      .set({
+        accounts: {
+          first_name: options.first_name,
+          last_name: options.last_name,
+        },
+      })
+      .where('user.id=:id', { id: options.id })
+      .execute();
     return {
       status,
       statusCode,
@@ -66,7 +80,9 @@ export class UserRepository extends Repository<UserEntity> {
       statusCode: number = 400,
       message: string = 'Inccorect username or password',
       token: string;
-    const check = await this.findOne({ where: { username: options.username } });
+    const check = await this.findOneOrFail({
+      where: { username: options.username },
+    });
     const check_hash = await check.verifyPassword(options.password);
     if (check && check_hash) {
       token = jwt.sign(
@@ -85,21 +101,37 @@ export class UserRepository extends Repository<UserEntity> {
       token,
     };
   }
-}
 
-@Service()
-export class UserService {
-  constructor(@InjectRepository() public repo: UserRepository) {}
-
-  async createUser(options: CreateNewUserInput): Promise<UserQueryResponse> {
-    return this.repo.recordUser(options);
+  async getall(): Promise<UserQueryResponse> {
+    const results = await this.connection
+      .createQueryBuilder(UserEntity, 'user')
+      .leftJoinAndSelect('user.accounts', 'accounts')
+      .leftJoinAndSelect('accounts.location', 'country')
+      .getMany();
+    return {
+      status: 'Success',
+      statusCode: 200,
+      results,
+    };
   }
 
-  async updateUser(options: UpdateUserInput): Promise<UserQueryResponse> {
-    return this.repo.updateUser(options);
-  }
+  async getDetail(options: string) {
+    let status: Status = 'Success',
+      statusCode: number = 200;
+    const filter = await this.connection
+      .createQueryBuilder(UserEntity, 'user')
+      .where('user.id=:id', { id: options })
+      .leftJoinAndSelect('user.accounts', 'accounts')
+      .leftJoinAndSelect('accounts.location', 'country')
+      .getOne();
 
-  async loginUser(options: LoginUserInput): Promise<UserQueryResponse> {
-    return this.repo.loginUser(options);
+    if (!filter) {
+      throw new Error('Accounts not found');
+    }
+    return {
+      status,
+      statusCode,
+      user: filter,
+    };
   }
 }

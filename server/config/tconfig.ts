@@ -10,11 +10,12 @@ export default {
   username: process.env.db_user,
   password: process.env.db_pass,
   database: test
-    ? path.join(__dirname, '../../dbTest.sqlite')
+    ? path.join(__dirname, '../../dbCircle.sqlite')
     : process.env.db_name,
-  synchronize: true,
   logging: false,
+  synchronize: true,
+  dropSchema: false,
   migrations: [path.join(__dirname, '../typeorm/migrations/*.ts')],
   subscribers: [path.join(__dirname, '../typeorm/subscribers/*.ts')],
-  entities: [path.join(__dirname, '../typeorm/entity/*ts')],
+  entities: [path.join(__dirname, '../typeorm/entity/*.ts')],
 } as Parameters<typeof createConnection>[0];

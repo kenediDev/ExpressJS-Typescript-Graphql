@@ -2,16 +2,22 @@ import { Field, ObjectType } from 'type-graphql';
 import {
   BaseEntity,
   BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
+  JoinColumn,
+  OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import bcrypt from 'bcrypt';
 import { test } from '../../internal/__test_config__';
+import { AccountsEntity } from './AccountsEntity';
+import { CountryEntity } from './CountryEntity';
 
 @ObjectType()
 @Entity('user')
 export class UserEntity extends BaseEntity {
+  @Field(() => String, { nullable: true })
   @PrimaryGeneratedColumn('uuid')
   readonly id: string;
 
@@ -23,13 +29,10 @@ export class UserEntity extends BaseEntity {
   @Column('varchar', { nullable: false, unique: true, length: 225 })
   email: string;
 
-  @Field(() => String, { nullable: true })
-  @Column('varchar', { nullable: true, length: 225 })
-  first_name: string;
-
-  @Field(() => String, { nullable: true })
-  @Column('varchar', { nullable: true, length: 225 })
-  last_name: string;
+  @Field(() => AccountsEntity, { nullable: true })
+  @OneToOne(() => AccountsEntity, (accounts) => accounts.id)
+  @JoinColumn()
+  accounts: AccountsEntity;
 
   @Field(() => Date, { nullable: true })
   @Column(test ? 'datetime' : 'timestamp', { nullable: true })
@@ -47,13 +50,36 @@ export class UserEntity extends BaseEntity {
   password: string;
 
   @BeforeInsert()
-  async generateTimes() {
+  async generateCreateAt() {
     this.createAt = new Date();
+  }
+
+  @BeforeInsert()
+  async generateUpdateAt() {
     this.updateAt = new Date();
+  }
+
+  @BeforeInsert()
+  async generatePasword() {
     this.password = await bcrypt.hash(
       this.password,
       Math.floor((Math.random() + 1) * Math.random())
     );
+  }
+
+  @BeforeUpdate()
+  async retrieveUpdateAt() {
+    this.updateAt = new Date();
+  }
+
+  @BeforeInsert()
+  async generateAccounts() {
+    const country = new CountryEntity();
+    await country.save();
+    const accounts = new AccountsEntity();
+    accounts.location = country;
+    await accounts.save();
+    this.accounts = accounts;
   }
 
   async verifyPassword(options) {

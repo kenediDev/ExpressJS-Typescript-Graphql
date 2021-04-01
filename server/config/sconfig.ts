@@ -9,27 +9,23 @@ import { UserResolver } from '../schema/resolver/userResolver';
 
 import { AuthCheker } from './authCheker';
 
-const resolvers: any[any] = [GeneralResolver, UserResolver];
+export const schema = buildSchema({
+  resolvers: [GeneralResolver, UserResolver],
+  validate: true,
+  container: Container,
+  authChecker: AuthCheker,
+  authMode: 'error',
+});
 
-export const schema = async (): Promise<{
+export const schemaMiddleware = async (): Promise<{
   typeDefs: any;
   resolvers: ResolversMap<any, any>;
 }> => {
-  return await buildTypeDefsAndResolvers({
-    resolvers: resolvers,
-    validate: false,
+  return buildTypeDefsAndResolvers({
+    resolvers: [GeneralResolver, UserResolver],
+    validate: true,
     container: Container,
-    authMode: 'null',
     authChecker: AuthCheker,
-    dateScalarMode: 'timestamp',
+    authMode: 'error',
   });
 };
-
-export const schemaTest = buildSchema({
-  resolvers: resolvers,
-  validate: false,
-  container: Container,
-  authMode: 'null',
-  authChecker: AuthCheker,
-  // emitSchemaFile: path.resolve(__dirname, "__snapshots__.gql")
-});
